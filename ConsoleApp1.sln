@@ -1,25 +1,182 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32825.248
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{E5EBD7D4-9DC8-4F58-8AB6-784E2B602557}"
-EndProject
-Global
-	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E5EBD7D4-9DC8-4F58-8AB6-784E2B602557}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5EBD7D4-9DC8-4F58-8AB6-784E2B602557}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5EBD7D4-9DC8-4F58-8AB6-784E2B602557}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5EBD7D4-9DC8-4F58-8AB6-784E2B602557}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {69EE7A2D-4997-4EA9-B231-3E0A08E8EC94}
-	EndGlobalSection
-EndGlobal
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ConsoleApp1
+{
+    internal class Program
+    {
+        static void Main(string[] arg)
+        {
+            while(true)
+            {
+                try
+                {
+                    Console.Write("Значение Длины комнаты: ");
+                    double roomLength = double.Parse(Console.ReadLine());
+                    Console.Write("Значение Ширины комнаты: ");
+                    double roomWidth = double.Parse(Console.ReadLine());
+                    Console.Write("Значение Высота комнаты: ");
+                    double roomHeight = double.Parse(Console.ReadLine());
+
+                    // объект класса Room
+                    Room room = new Room(roomLength, roomWidth, roomHeight);
+                    Console.WriteLine("Площадь комнаты: " + room.Square);
+                    Console.WriteLine("Объем комнаты: " + room.Volume());
+                    Console.WriteLine("Рекомендуемое количество окон в комнате: " + room.Windows);
+                }
+                catch (IncorrectValue e)
+                {
+                    Console.WriteLine(e.Message);
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Пиши цифры!");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+
+                Console.ReadKey();
+                Console.Clear();
+            }
+
+        }
+    }
+    class Room
+    {
+        // конструктор класса
+        public Room(double length, double width, double height)
+        {
+            Length = length;
+            Width = width;
+            Height = height;
+            Square = square;
+            Windows = windows;
+        }
+
+        private double width;
+
+        //свойство ширины
+        public double Width
+        {
+            get { return width; }
+            set
+            {
+                //обработка исключений
+                if (value <= 0)
+                {
+                    throw new IncorrectValue("Некорректный ввод ширины комнаты!");
+                }
+                else
+                {
+                    width = value;
+                }
+            }
+        }
+        private double length;
+
+        //свойство длины
+        public double Length
+        {
+            get { return length; }
+            set
+            {
+                //обработка исключений
+                if(value <= 0)
+                {
+                    throw new IncorrectValue("Некорректный ввод длины комнаты");
+                }
+                else
+                {
+                    length = value;
+                }
+            }
+        }
+
+        private double height;
+
+        //свойство высота
+        public double Height
+        {
+            get { return height; }
+            set
+            {
+                //обработка исключений
+                if (value <= 0)
+                {
+                    throw new IncorrectValue("Некорректный ввод высоты комнаты!");
+                }
+                else
+                {
+                    height = value;
+                }
+            }
+        }
+
+
+        //нахождение площади через свойство (get, set)(геттеры и сеттеры)
+        private double square;
+        public double Square 
+        {
+            get { return square; }
+            set 
+            {
+                square = length * width;
+            }
+        }
+
+        //нахождение объёма через метод
+        public double Volume()
+        {
+            return height * width * length;
+        }
+
+        private int windows;
+
+        //нахождение количества окон
+        public int Windows
+        {
+            get 
+            {
+                return windows;
+            }
+            set {
+                if (square <= 10)
+                {
+                    windows = 1;
+                }
+                else if (square <= 20)
+                {
+                    windows = 2;
+                }
+                else if (square <= 40)
+                {
+                    windows = 3;
+                }
+                else
+                {
+                    windows = 4;
+                }
+            }
+        }
+
+    }
+
+    // Это класс исключения некорректного ввода (значение по дефолту (снипет Exception) (создание собственных исключений)
+    [Serializable]
+    public class IncorrectValue : Exception
+    {
+        public IncorrectValue() { }
+        public IncorrectValue(string message) : base(message) { }
+        public IncorrectValue(string message, Exception inner) : base(message, inner) { }
+        protected IncorrectValue(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+    }
+
+}
+
